@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { useServerFn } from "@tanstack/react-start";
 import {
   Bell,
   BellRing,
@@ -29,7 +30,8 @@ import { toast } from "sonner";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { getSimulatedReading, type SensorStatus } from "@/lib/sensor-simulator";
+import { getLatestDetectorReading, type LiveDetectorReading } from "@/lib/detector.functions";
+import { getSensorStatus, getSimulatedReading, type SensorStatus } from "@/lib/sensor-simulator";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -84,8 +86,24 @@ function Dashboard() {
   const [alertActive, setAlertActive] = useState(false);
   const [email, setEmail] = useState("");
   const [emailEnabled, setEmailEnabled] = useState(false);
+  const [liveReading, setLiveReading] = useState<LiveDetectorReading | null>(null);
+  const [connectionChecked, setConnectionChecked] = useState(false);
   const [notificationPermission, setNotificationPermission] = useState<NotificationPermission | "unsupported">("default");
-  const reading = useMemo(() => getSimulatedReading(step, alertActive), [step, alertActive]);
+  const fetchLatestReading = useServerFn(getLatestDetectorReading);
+  const sampleReading = useMemo(() => getSimulatedReading(step, alertActive), [step, alertActive]);
+  const reading = useMemo(() => {
+    if (alertActive || !liveReading) return sampleReading;
+    return {
+      temperature: liveReading.temperature,
+      humidity: liveReading.humidity,
+      pressure: liveReading.pressure,
+      voc: liveReading.voc,
+      status: getSensorStatus(liveReading),
+      updatedAt: new Date(liveReading.receivedAt),
+    };
+  }, [alertActive, liveReading, sampleReading]);
+  const isLive = Boolean(liveReading) && !alertActive;
+  const isStale = liveReading ? Date.now() - new Date(liveReading.receivedAt).getTime() > 60_000 : false;
   const status = statusContent[reading.status];
 
   useEffect(() => {
@@ -95,9 +113,26 @@ function Dashboard() {
       setNotificationPermission(Notification.permission);
     }
 
-    const timer = window.setInterval(() => setStep((value) => value + 1), 4000);
-    return () => window.clearInterval(timer);
-  }, []);
+    let active = true;
+    const refresh = async () => {
+      try {
+        const latest = await fetchLatestReading();
+        if (active) setLiveReading(latest);
+      } catch {
+        if (active) setLiveReading(null);
+      } finally {
+        if (active) setConnectionChecked(true);
+      }
+    };
+    void refresh();
+    const sampleTimer = window.setInterval(() => setStep((value) => value + 1), 4000);
+    const liveTimer = window.setInterval(() => void refresh(), 15000);
+    return () => {
+      active = false;
+      window.clearInterval(sampleTimer);
+      window.clearInterval(liveTimer);
+    };
+  }, [fetchLatestReading]);
 
   async function enableBrowserAlerts() {
     if (typeof Notification === "undefined") {
@@ -134,10 +169,12 @@ function Dashboard() {
         <div className="mx-auto grid max-w-7xl gap-8 px-4 py-10 sm:px-6 lg:grid-cols-[1.25fr_0.75fr] lg:px-8 lg:py-14">
           <div>
             <div className="mb-4 flex flex-wrap items-center gap-3">
-              <Badge variant="outline" className="border-primary/20 bg-clinical text-primary">Live sample data</Badge>
+              <Badge variant="outline" className={isLive ? "border-safe/30 bg-safe-soft text-safe" : "border-primary/20 bg-clinical text-primary"}>
+                {isLive ? "Live detector data" : connectionChecked ? "Sample data" : "Checking detector"}
+              </Badge>
               <span className="flex items-center gap-2 text-xs font-semibold text-muted-foreground">
-                <span className="sensor-pulse size-2 rounded-full bg-safe" />
-                Updating every 4 seconds
+                <span className={`sensor-pulse size-2 rounded-full ${isLive && !isStale ? "bg-safe" : "bg-warning"}`} />
+                {isLive ? (isStale ? "Detector signal is delayed" : "Detector connected") : "Waiting for the physical detector"}
               </span>
             </div>
             <h1 className="max-w-3xl text-3xl font-extrabold text-foreground sm:text-5xl">
@@ -174,7 +211,7 @@ function Dashboard() {
               <h2 id="readings-title" className="mt-1 text-2xl font-bold">Sensor readings</h2>
             </div>
             <p className="flex items-center gap-2 text-xs text-muted-foreground">
-              <RefreshCw className="size-3.5" /> Live sample · refreshes every 4 seconds
+               <RefreshCw className="size-3.5" /> {isLive ? `Received from ${liveReading?.deviceId ?? "detector"}` : "Safe sample mode"}
             </p>
           </div>
 
@@ -232,14 +269,14 @@ function Dashboard() {
               <span className="grid size-10 place-items-center rounded-md bg-safe-soft text-safe"><ShieldCheck className="size-5" /></span>
               <div>
                 <h2 id="system-title" className="text-xl font-bold">System health</h2>
-                <p className="text-sm text-muted-foreground">Sample device connection status.</p>
+                <p className="text-sm text-muted-foreground">Physical detector connection status.</p>
               </div>
             </div>
             <dl className="mt-6 divide-y divide-border border-y border-border">
-              <HealthRow icon={Radio} label="Sensor link" value="Connected" />
-              <HealthRow icon={CloudCog} label="Data source" value="Simulator" />
+              <HealthRow icon={Radio} label="Sensor link" value={isLive ? (isStale ? "Signal delayed" : "Connected") : "Waiting"} />
+              <HealthRow icon={CloudCog} label="Data source" value={isLive ? "Physical detector" : "Simulator fallback"} />
               <HealthRow icon={CircuitBoard} label="Processor" value="ESP32-S3 ready" />
-              <HealthRow icon={Clock3} label="Last sync" value="Just now" />
+              <HealthRow icon={Clock3} label="Last sync" value={isLive ? "Latest reading received" : "No device reading yet"} />
             </dl>
           </section>
         </div>

@@ -9,6 +9,12 @@ export type SensorReading = {
   updatedAt: Date;
 };
 
+export function getSensorStatus(reading: Pick<SensorReading, "temperature" | "humidity" | "voc">): SensorStatus {
+  if (reading.temperature > 7 || reading.humidity > 75 || reading.voc > 300) return "risk";
+  if (reading.temperature > 5 || reading.humidity > 70 || reading.voc > 90) return "warning";
+  return "fresh";
+}
+
 type BaseReading = Omit<SensorReading, "status" | "updatedAt">;
 
 const baseReadings: BaseReading[] = [
@@ -36,7 +42,7 @@ export function getSimulatedReading(step: number, alertActive = false): SensorRe
 
   return {
     ...sample,
-    status: sample.voc > 90 ? "warning" : "fresh",
+    status: getSensorStatus(sample),
     updatedAt: new Date(),
   };
 }
