@@ -174,7 +174,7 @@ function Dashboard() {
               <h2 id="readings-title" className="mt-1 text-2xl font-bold">Sensor readings</h2>
             </div>
             <p className="flex items-center gap-2 text-xs text-muted-foreground">
-              <RefreshCw className="size-3.5" /> Updated {reading.updatedAt.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", second: "2-digit" })}
+              <RefreshCw className="size-3.5" /> Live sample · refreshes every 4 seconds
             </p>
           </div>
 

@@ -3,7 +3,7 @@ import { Apple, CheckCircle2, CircleSlash, Leaf, Package, Recycle, Trash2 } from
 import { useState } from "react";
 
 import { PageIntro } from "@/components/page-intro";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Button } from "@/components/ui/button";
 
 export const Route = createFileRoute("/waste-guide")({
   head: () => ({ meta: [
@@ -26,18 +26,21 @@ function WasteGuide() {
     <main>
       <PageIntro eyebrow="Practical sorting" title="Separate waste before it becomes a problem." description="Use this quick guide to keep compostable material away from clean recyclables and reduce contamination at home." icon={Recycle} />
       <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-        <Tabs value={tab} onValueChange={setTab}>
-          <TabsList className="grid h-auto w-full grid-cols-2 sm:w-fit">
-            <TabsTrigger value="wet" className="gap-2 px-5 py-2.5"><Leaf className="size-4" /> Wet waste</TabsTrigger>
-            <TabsTrigger value="dry" className="gap-2 px-5 py-2.5"><Package className="size-4" /> Dry waste</TabsTrigger>
-          </TabsList>
-          <TabsContent value="wet" className="mt-6">
+        <div className="grid w-full grid-cols-2 rounded-md bg-muted p-1 sm:w-fit" role="group" aria-label="Waste type">
+          <Button variant={tab === "wet" ? "outline" : "ghost"} className="h-10 border-transparent px-5" onClick={() => setTab("wet")} aria-pressed={tab === "wet"}>
+            <Leaf /> Wet waste
+          </Button>
+          <Button variant={tab === "dry" ? "outline" : "ghost"} className="h-10 border-transparent px-5" onClick={() => setTab("dry")} aria-pressed={tab === "dry"}>
+            <Package /> Dry waste
+          </Button>
+        </div>
+        <div className="mt-6">
+          {tab === "wet" ? (
             <WastePanel title="Wet waste" description="Biodegradable kitchen material that breaks down naturally." items={wetItems} icon={Apple} accent="safe" steps={["Keep a small covered bin near food preparation areas.", "Drain excess liquid before placing scraps in the bin.", "Compost locally where possible, or use your municipal wet-waste collection.", "Wash the container regularly to control odor and pests."]} />
-          </TabsContent>
-          <TabsContent value="dry" className="mt-6">
+          ) : (
             <WastePanel title="Dry waste" description="Non-biodegradable material that can often be recovered or recycled." items={dryItems} icon={Package} accent="primary" steps={["Empty and rinse containers so food does not contaminate them.", "Let packaging dry before placing it in the recycling bin.", "Keep paper flat and protected from moisture.", "Use local collection rules for glass, metal, plastic and electronic waste."]} />
-          </TabsContent>
-        </Tabs>
+          )}
+        </div>
 
         <section className="mt-10 border border-warning/40 bg-warning-soft p-5 sm:p-6">
           <div className="flex gap-4">
