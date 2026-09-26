@@ -6,3 +6,8 @@
 - [x] Add wet and dry waste guide
 - [x] Add waste innovation overview
 - [x] Verify desktop and mobile behavior
+- [ ] Enable persistent live detector readings
+- [ ] Add authenticated ESP32 ingestion endpoint
+- [ ] Replace sample-only dashboard with live-first mode and fallback
+- [ ] Add detector setup instructions and firmware example
+- [ ] Verify and publish website
