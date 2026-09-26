@@ -10,33 +10,53 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as InnovationsRouteImport } from './routes/innovations'
+import { Route as WasteGuideRouteImport } from './routes/waste-guide'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const InnovationsRoute = InnovationsRouteImport.update({
+  id: '/innovations',
+  path: '/innovations',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const WasteGuideRoute = WasteGuideRouteImport.update({
+  id: '/waste-guide',
+  path: '/waste-guide',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/innovations': typeof InnovationsRoute
+  '/waste-guide': typeof WasteGuideRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/innovations': typeof InnovationsRoute
+  '/waste-guide': typeof WasteGuideRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/innovations': typeof InnovationsRoute
+  '/waste-guide': typeof WasteGuideRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths: '/' | '/innovations' | '/waste-guide'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to: '/' | '/innovations' | '/waste-guide'
+  id: '__root__' | '/' | '/innovations' | '/waste-guide'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  InnovationsRoute: typeof InnovationsRoute
+  WasteGuideRoute: typeof WasteGuideRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -48,11 +68,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/innovations': {
+      id: '/innovations'
+      path: '/innovations'
+      fullPath: '/innovations'
+      preLoaderRoute: typeof InnovationsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/waste-guide': {
+      id: '/waste-guide'
+      path: '/waste-guide'
+      fullPath: '/waste-guide'
+      preLoaderRoute: typeof WasteGuideRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  InnovationsRoute: InnovationsRoute,
+  WasteGuideRoute: WasteGuideRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

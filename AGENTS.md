@@ -8,3 +8,8 @@
 > Commits you push to the connected branch sync back to Lovable and show up in
 > the editor, so keep the branch in a working state.
 <!-- LOVABLE:END -->
+
+## Project architecture
+
+- Keep detector readings behind `src/lib/sensor-simulator.ts` so the sample source can later be replaced by an ESP32 endpoint without redesigning the dashboard.
+- Keep public educational content on dedicated TanStack routes (`/waste-guide` and `/innovations`) for direct navigation and route-specific metadata.
