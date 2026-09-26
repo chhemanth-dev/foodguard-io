@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { CheckCircle2, Copy, Download, KeyRound, Radio, Router, UploadCloud } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
 import { PageIntro } from "@/components/page-intro";
@@ -30,9 +30,9 @@ function DeviceSetup() {
   const [origin, setOrigin] = useState("");
   const endpoint = origin ? `${origin}/api/public/detector/readings` : "/api/public/detector/readings";
 
-  useState(() => {
-    if (typeof window !== "undefined") setOrigin(window.location.origin);
-  });
+  useEffect(() => {
+    setOrigin(window.location.origin);
+  }, []);
 
   async function copyEndpoint() {
     await navigator.clipboard.writeText(endpoint);
