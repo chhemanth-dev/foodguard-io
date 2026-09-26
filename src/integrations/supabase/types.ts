@@ -14,7 +14,42 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      detector_readings: {
+        Row: {
+          created_at: string
+          device_id: string
+          humidity: number
+          id: string
+          measured_at: string | null
+          pressure: number
+          temperature: number
+          updated_at: string
+          voc: number
+        }
+        Insert: {
+          created_at?: string
+          device_id: string
+          humidity: number
+          id?: string
+          measured_at?: string | null
+          pressure: number
+          temperature: number
+          updated_at?: string
+          voc: number
+        }
+        Update: {
+          created_at?: string
+          device_id?: string
+          humidity?: number
+          id?: string
+          measured_at?: string | null
+          pressure?: number
+          temperature?: number
+          updated_at?: string
+          voc?: number
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
