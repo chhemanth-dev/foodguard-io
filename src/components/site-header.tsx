@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { BellRing, FlaskConical, Lightbulb, Menu, Recycle, X } from "lucide-react";
+import { BellRing, Cable, FlaskConical, Lightbulb, Menu, Recycle, X } from "lucide-react";
 import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
@@ -8,6 +8,7 @@ const links = [
   { to: "/" as const, label: "Monitor", icon: FlaskConical },
   { to: "/waste-guide" as const, label: "Waste guide", icon: Recycle },
   { to: "/innovations" as const, label: "Innovations", icon: Lightbulb },
+  { to: "/device-setup" as const, label: "Connect detector", icon: Cable },
 ];
 
 export function SiteHeader() {

@@ -10,12 +10,19 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as DeviceSetupRouteImport } from './routes/device-setup'
 import { Route as InnovationsRouteImport } from './routes/innovations'
 import { Route as WasteGuideRouteImport } from './routes/waste-guide'
+import { Route as ApiPublicDetectorReadingsRouteImport } from './routes/api/public/detector/readings'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DeviceSetupRoute = DeviceSetupRouteImport.update({
+  id: '/device-setup',
+  path: '/device-setup',
   getParentRoute: () => rootRouteImport,
 } as any)
 const InnovationsRoute = InnovationsRouteImport.update({
@@ -28,35 +35,65 @@ const WasteGuideRoute = WasteGuideRouteImport.update({
   path: '/waste-guide',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicDetectorReadingsRoute =
+  ApiPublicDetectorReadingsRouteImport.update({
+    id: '/api/public/detector/readings',
+    path: '/api/public/detector/readings',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/device-setup': typeof DeviceSetupRoute
   '/innovations': typeof InnovationsRoute
   '/waste-guide': typeof WasteGuideRoute
+  '/api/public/detector/readings': typeof ApiPublicDetectorReadingsRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/device-setup': typeof DeviceSetupRoute
   '/innovations': typeof InnovationsRoute
   '/waste-guide': typeof WasteGuideRoute
+  '/api/public/detector/readings': typeof ApiPublicDetectorReadingsRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/device-setup': typeof DeviceSetupRoute
   '/innovations': typeof InnovationsRoute
   '/waste-guide': typeof WasteGuideRoute
+  '/api/public/detector/readings': typeof ApiPublicDetectorReadingsRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/innovations' | '/waste-guide'
+  fullPaths:
+    | '/'
+    | '/device-setup'
+    | '/innovations'
+    | '/waste-guide'
+    | '/api/public/detector/readings'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/innovations' | '/waste-guide'
-  id: '__root__' | '/' | '/innovations' | '/waste-guide'
+  to:
+    | '/'
+    | '/device-setup'
+    | '/innovations'
+    | '/waste-guide'
+    | '/api/public/detector/readings'
+  id:
+    | '__root__'
+    | '/'
+    | '/device-setup'
+    | '/innovations'
+    | '/waste-guide'
+    | '/api/public/detector/readings'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  DeviceSetupRoute: typeof DeviceSetupRoute
   InnovationsRoute: typeof InnovationsRoute
   WasteGuideRoute: typeof WasteGuideRoute
+  ApiPublicDetectorReadingsRoute: typeof ApiPublicDetectorReadingsRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -66,6 +103,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/device-setup': {
+      id: '/device-setup'
+      path: '/device-setup'
+      fullPath: '/device-setup'
+      preLoaderRoute: typeof DeviceSetupRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/innovations': {
@@ -82,13 +126,22 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof WasteGuideRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/detector/readings': {
+      id: '/api/public/detector/readings'
+      path: '/api/public/detector/readings'
+      fullPath: '/api/public/detector/readings'
+      preLoaderRoute: typeof ApiPublicDetectorReadingsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  DeviceSetupRoute: DeviceSetupRoute,
   InnovationsRoute: InnovationsRoute,
   WasteGuideRoute: WasteGuideRoute,
+  ApiPublicDetectorReadingsRoute: ApiPublicDetectorReadingsRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
