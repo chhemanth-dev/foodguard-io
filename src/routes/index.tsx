@@ -88,6 +88,7 @@ function Dashboard() {
   const [emailEnabled, setEmailEnabled] = useState(false);
   const [liveReading, setLiveReading] = useState<LiveDetectorReading | null>(null);
   const [connectionChecked, setConnectionChecked] = useState(false);
+  const [currentTime, setCurrentTime] = useState(0);
   const [notificationPermission, setNotificationPermission] = useState<NotificationPermission | "unsupported">("default");
   const fetchLatestReading = useServerFn(getLatestDetectorReading);
   const sampleReading = useMemo(() => getSimulatedReading(step, alertActive), [step, alertActive]);
@@ -103,7 +104,7 @@ function Dashboard() {
     };
   }, [alertActive, liveReading, sampleReading]);
   const isLive = Boolean(liveReading) && !alertActive;
-  const isStale = liveReading ? Date.now() - new Date(liveReading.receivedAt).getTime() > 60_000 : false;
+  const isStale = liveReading && currentTime > 0 ? currentTime - new Date(liveReading.receivedAt).getTime() > 60_000 : false;
   const status = statusContent[reading.status];
 
   useEffect(() => {
@@ -112,6 +113,7 @@ function Dashboard() {
     } else {
       setNotificationPermission(Notification.permission);
     }
+    setCurrentTime(Date.now());
 
     let active = true;
     const refresh = async () => {
@@ -127,10 +129,12 @@ function Dashboard() {
     void refresh();
     const sampleTimer = window.setInterval(() => setStep((value) => value + 1), 4000);
     const liveTimer = window.setInterval(() => void refresh(), 15000);
+    const clockTimer = window.setInterval(() => setCurrentTime(Date.now()), 15000);
     return () => {
       active = false;
       window.clearInterval(sampleTimer);
       window.clearInterval(liveTimer);
+      window.clearInterval(clockTimer);
     };
   }, [fetchLatestReading]);
 
