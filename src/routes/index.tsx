@@ -219,7 +219,7 @@ function Dashboard() {
             </p>
           </div>
 
-          <div className="grid gap-px overflow-hidden border border-border bg-border sm:grid-cols-2 lg:grid-cols-4">
+          <div className="grid gap-px overflow-hidden rounded-2xl border border-border bg-border sm:grid-cols-2 lg:grid-cols-4">
             <SensorCard icon={Thermometer} label="Temperature" value={`${reading.temperature.toFixed(1)}°C`} range="Expected: 0–5°C" alert={reading.temperature > 5} />
             <SensorCard icon={Droplets} label="Humidity" value={`${reading.humidity}%`} range="Expected: 45–70%" alert={reading.humidity > 70} />
             <SensorCard icon={Gauge} label="Pressure" value={`${reading.pressure} hPa`} range="Ambient pressure" alert={false} />
@@ -228,7 +228,7 @@ function Dashboard() {
         </section>
 
         <div className="mt-8 grid gap-6 lg:grid-cols-[1.15fr_0.85fr]">
-          <section className="border border-border bg-card p-5 sm:p-6" aria-labelledby="alerts-title">
+          <section className="hud-glass rounded-2xl border border-border bg-card p-5 sm:p-6" aria-labelledby="alerts-title">
             <div className="flex items-center gap-3">
               <span className="grid size-10 place-items-center rounded-md bg-clinical text-primary"><Bell className="size-5" /></span>
               <div>
@@ -268,7 +268,7 @@ function Dashboard() {
             </Button>
           </section>
 
-          <section className="border border-border bg-card p-5 sm:p-6" aria-labelledby="system-title">
+          <section className="hud-glass rounded-2xl border border-border bg-card p-5 sm:p-6" aria-labelledby="system-title">
             <div className="flex items-center gap-3">
               <span className="grid size-10 place-items-center rounded-md bg-safe-soft text-safe"><ShieldCheck className="size-5" /></span>
               <div>
@@ -291,9 +291,9 @@ function Dashboard() {
             <h2 id="hardware-title" className="mt-1 text-2xl font-bold">Detector components</h2>
             <p className="mt-2 text-sm leading-6 text-muted-foreground">Only the physical components specified for the Food Storage Spoilage Box are listed here.</p>
           </div>
-          <div className="mt-5 grid gap-px overflow-hidden border border-border bg-border sm:grid-cols-2 lg:grid-cols-5">
+          <div className="mt-5 grid gap-px overflow-hidden rounded-2xl border border-border bg-border sm:grid-cols-2 lg:grid-cols-5">
             {hardware.map(({ name, role, icon: Icon }) => (
-              <div key={name} className="min-h-36 bg-card p-4">
+              <div key={name} className="min-h-36 bg-card p-4 transition-colors hover:bg-secondary">
                 <Icon className="size-5 text-primary" aria-hidden="true" />
                 <h3 className="mt-5 text-sm font-bold">{name}</h3>
                 <p className="mt-2 text-xs leading-5 text-muted-foreground">{role}</p>
@@ -302,7 +302,7 @@ function Dashboard() {
           </div>
         </section>
 
-        <section className="mt-8 flex flex-col justify-between gap-5 border border-primary/20 bg-clinical p-6 sm:flex-row sm:items-center">
+        <section className="mt-8 flex flex-col justify-between gap-5 rounded-2xl border border-primary/30 bg-gradient-to-r from-primary/15 via-accent/10 to-safe/15 p-6 hud-glass sm:flex-row sm:items-center">
           <div>
             <p className="font-display text-lg font-bold">Use more than the monitor.</p>
             <p className="mt-1 text-sm text-muted-foreground">Learn simple sorting habits and explore practical waste innovations.</p>

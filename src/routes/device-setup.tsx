@@ -42,7 +42,7 @@ function DeviceSetup() {
   return <main>
     <PageIntro eyebrow="Physical detector" title="Connect your ESP32-S3" description="Send one small reading every 15 seconds. The monitor automatically switches from sample data when the first reading arrives." icon={Radio} />
     <div className="mx-auto max-w-5xl px-4 py-8 sm:px-6 lg:px-8">
-      <ol className="grid gap-px overflow-hidden border border-border bg-border md:grid-cols-3">
+      <ol className="grid gap-px overflow-hidden rounded-2xl border border-border bg-border md:grid-cols-3">
         <Step icon={KeyRound} number="1" title="Save the device key" text="Create one strong key and save it securely when prompted. Put the same key in the ESP32 code." />
         <Step icon={Router} number="2" title="Add Wi-Fi details" text="Open the downloaded file and replace the Wi-Fi name, password, website address and device key." />
         <Step icon={UploadCloud} number="3" title="Upload and check" text="Upload the sketch to the ESP32-S3. A live status should appear on the monitor after its first message." />
@@ -59,12 +59,12 @@ function DeviceSetup() {
       </section>
 
       <div className="mt-6 grid gap-6 md:grid-cols-2">
-        <section className="border border-border bg-card p-5 sm:p-6" aria-labelledby="format-title">
+        <section className="hud-glass rounded-2xl border border-border bg-card p-5 sm:p-6" aria-labelledby="format-title">
           <h2 id="format-title" className="text-xl font-bold">Reading format</h2>
           <pre className="mt-4 overflow-x-auto rounded-md bg-muted p-4 text-xs leading-6 text-foreground"><code>{payload}</code></pre>
           <p className="mt-3 text-sm text-muted-foreground">Temperature is °C, humidity is %, pressure is hPa, and VOC is ppb.</p>
         </section>
-        <section className="border border-border bg-card p-5 sm:p-6" aria-labelledby="firmware-title">
+        <section className="hud-glass rounded-2xl border border-border bg-card p-5 sm:p-6" aria-labelledby="firmware-title">
           <h2 id="firmware-title" className="text-xl font-bold">ESP32 Arduino example</h2>
           <p className="mt-3 text-sm leading-6 text-muted-foreground">The sketch includes Wi-Fi and dashboard sending. Replace its four setup values and connect the reading variables to your installed sensor libraries.</p>
           <Button asChild className="mt-5"><a href="/firmware/food-spoilage-box.ino" download><Download /> Download .ino file</a></Button>

@@ -29,7 +29,7 @@ function Innovations() {
     <main>
       <PageIntro eyebrow="Useful technology" title="Better ways to recover value from waste." description="A practical overview of technologies changing how organic scraps, packaging and mixed materials are collected, sorted and treated." icon={Lightbulb} />
       <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-        <div className="grid gap-px overflow-hidden border border-border bg-border md:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-px overflow-hidden rounded-2xl border border-border bg-border md:grid-cols-2 lg:grid-cols-3">
           {innovations.map(({ category, title, description, icon: Icon, maturity }) => (
             <article key={title} className="flex min-h-72 flex-col bg-card p-6">
               <div className="flex items-center justify-between gap-4">
