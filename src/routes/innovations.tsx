@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { ArrowRight, Biohazard, Factory, Lightbulb, PackageCheck, ScanLine, Sprout, Truck } from "lucide-react";
 
+import { WebDiscovery } from "@/components/web-discovery";
 import { PageIntro } from "@/components/page-intro";
 
 export const Route = createFileRoute("/innovations")({
@@ -47,6 +48,7 @@ function Innovations() {
           <h2 className="text-lg font-bold">Start with good separation</h2>
           <p className="mt-2 max-w-3xl text-sm leading-6 text-muted-foreground">Technology works best when wet waste, clean recyclables and hazardous material are kept apart at the source. Correct household sorting remains the most useful first step.</p>
         </section>
+        <WebDiscovery title="Latest waste innovations online" description="Discover new inventions, startups and projects in waste management from websites, news and social media." defaultQuery="latest waste management innovations 2026" suggestions={["food waste startups", "biogas innovation", "AI waste sorting", "plastic upcycling inventions"]} />
       </div>
     </main>
   );
