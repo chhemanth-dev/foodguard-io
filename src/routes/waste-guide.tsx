@@ -3,6 +3,7 @@ import { Apple, CheckCircle2, CircleSlash, Leaf, Package, Recycle, Trash2 } from
 import { useState } from "react";
 
 import { PageIntro } from "@/components/page-intro";
+import { WebDiscovery } from "@/components/web-discovery";
 import { Button } from "@/components/ui/button";
 
 export const Route = createFileRoute("/waste-guide")({
@@ -51,6 +52,7 @@ function WasteGuide() {
             </div>
           </div>
         </section>
+        <WebDiscovery title="More waste ideas from around the web" description="Fresh tips, videos and posts about managing wet and dry waste, pulled from websites, news and social media." defaultQuery="home wet and dry waste management tips" suggestions={["composting at home", "kitchen waste reuse", "plastic recycling at home", "e-waste disposal"]} />
       </div>
     </main>
   );
