@@ -169,9 +169,9 @@ function Dashboard() {
 
   return (
     <main>
-      <section className="border-b border-border bg-card">
+      <section className="relative overflow-hidden border-b border-border">
         <div className="mx-auto grid max-w-7xl gap-8 px-4 py-10 sm:px-6 lg:grid-cols-[1.25fr_0.75fr] lg:px-8 lg:py-14">
-          <div>
+          <div className="rise-in">
             <div className="mb-4 flex flex-wrap items-center gap-3">
               <Badge variant="outline" className={isLive ? "border-safe/30 bg-safe-soft text-safe" : "border-primary/20 bg-clinical text-primary"}>
                 {isLive ? "Live detector data" : connectionChecked ? "Sample data" : "Checking detector"}
@@ -182,17 +182,19 @@ function Dashboard() {
               </span>
             </div>
             <h1 className="max-w-3xl text-3xl font-extrabold text-foreground sm:text-5xl">
-              Know when food conditions begin to change.
+              Know when food conditions <span className="text-gradient">begin to change.</span>
             </h1>
             <p className="mt-5 max-w-2xl text-base leading-7 text-muted-foreground sm:text-lg">
               A clear view of temperature, humidity, pressure and gas readings from your Food Storage Spoilage Box.
             </p>
           </div>
 
-          <div className={`border p-5 ${status.className}`}>
+          <div className="rise-in relative" style={{ animationDelay: "120ms" }}>
+          <SensorOrb status={reading.status} />
+          <div className={`hud-glass relative rounded-2xl border p-5 backdrop-blur-xl ${status.className}`}>
             <div className="flex items-start justify-between gap-4">
               <div>
-                <p className="text-xs font-bold uppercase">Current food status</p>
+                <p className="font-mono text-xs font-bold uppercase">Current food status</p>
                 <p className="mt-2 font-display text-2xl font-bold">{status.label}</p>
               </div>
               <span className={`mt-1 size-4 rounded-full ring-4 ring-background ${status.dot}`} />
@@ -203,6 +205,7 @@ function Dashboard() {
                 <Check /> Dismiss sample alert
               </Button>
             )}
+          </div>
           </div>
         </div>
       </section>
@@ -219,7 +222,7 @@ function Dashboard() {
             </p>
           </div>
 
-          <div className="grid gap-px overflow-hidden border border-border bg-border sm:grid-cols-2 lg:grid-cols-4">
+          <div className="grid gap-px overflow-hidden rounded-2xl border border-border bg-border sm:grid-cols-2 lg:grid-cols-4">
             <SensorCard icon={Thermometer} label="Temperature" value={`${reading.temperature.toFixed(1)}°C`} range="Expected: 0–5°C" alert={reading.temperature > 5} />
             <SensorCard icon={Droplets} label="Humidity" value={`${reading.humidity}%`} range="Expected: 45–70%" alert={reading.humidity > 70} />
             <SensorCard icon={Gauge} label="Pressure" value={`${reading.pressure} hPa`} range="Ambient pressure" alert={false} />
@@ -228,9 +231,9 @@ function Dashboard() {
         </section>
 
         <div className="mt-8 grid gap-6 lg:grid-cols-[1.15fr_0.85fr]">
-          <section className="border border-border bg-card p-5 sm:p-6" aria-labelledby="alerts-title">
+          <section className="hud-glass rounded-2xl border border-border bg-card p-5 sm:p-6" aria-labelledby="alerts-title">
             <div className="flex items-center gap-3">
-              <span className="grid size-10 place-items-center rounded-md bg-clinical text-primary"><Bell className="size-5" /></span>
+              <span className="grid size-10 place-items-center rounded-xl bg-clinical text-primary"><Bell className="size-5" /></span>
               <div>
                 <h2 id="alerts-title" className="text-xl font-bold">Alert settings</h2>
                 <p className="text-sm text-muted-foreground">Choose how urgent warnings reach you.</p>
@@ -268,9 +271,9 @@ function Dashboard() {
             </Button>
           </section>
 
-          <section className="border border-border bg-card p-5 sm:p-6" aria-labelledby="system-title">
+          <section className="hud-glass rounded-2xl border border-border bg-card p-5 sm:p-6" aria-labelledby="system-title">
             <div className="flex items-center gap-3">
-              <span className="grid size-10 place-items-center rounded-md bg-safe-soft text-safe"><ShieldCheck className="size-5" /></span>
+              <span className="grid size-10 place-items-center rounded-xl bg-safe-soft text-safe"><ShieldCheck className="size-5" /></span>
               <div>
                 <h2 id="system-title" className="text-xl font-bold">System health</h2>
                 <p className="text-sm text-muted-foreground">Physical detector connection status.</p>
@@ -291,9 +294,9 @@ function Dashboard() {
             <h2 id="hardware-title" className="mt-1 text-2xl font-bold">Detector components</h2>
             <p className="mt-2 text-sm leading-6 text-muted-foreground">Only the physical components specified for the Food Storage Spoilage Box are listed here.</p>
           </div>
-          <div className="mt-5 grid gap-px overflow-hidden border border-border bg-border sm:grid-cols-2 lg:grid-cols-5">
+          <div className="mt-5 grid gap-px overflow-hidden rounded-2xl border border-border bg-border sm:grid-cols-2 lg:grid-cols-5">
             {hardware.map(({ name, role, icon: Icon }) => (
-              <div key={name} className="min-h-36 bg-card p-4">
+              <div key={name} className="min-h-36 bg-card p-4 transition-colors hover:bg-secondary">
                 <Icon className="size-5 text-primary" aria-hidden="true" />
                 <h3 className="mt-5 text-sm font-bold">{name}</h3>
                 <p className="mt-2 text-xs leading-5 text-muted-foreground">{role}</p>
@@ -302,7 +305,7 @@ function Dashboard() {
           </div>
         </section>
 
-        <section className="mt-8 flex flex-col justify-between gap-5 border border-primary/20 bg-clinical p-6 sm:flex-row sm:items-center">
+        <section className="mt-8 flex flex-col justify-between gap-5 rounded-2xl border border-primary/30 bg-gradient-to-r from-primary/15 via-accent/10 to-safe/15 p-6 hud-glass sm:flex-row sm:items-center">
           <div>
             <p className="font-display text-lg font-bold">Use more than the monitor.</p>
             <p className="mt-1 text-sm text-muted-foreground">Learn simple sorting habits and explore practical waste innovations.</p>
@@ -318,13 +321,13 @@ function Dashboard() {
 
 function SensorCard({ icon: Icon, label, value, range, alert }: { icon: typeof Thermometer; label: string; value: string; range: string; alert: boolean }) {
   return (
-    <article className={`min-h-44 bg-card p-5 ${alert ? "border-t-4 border-destructive" : "border-t-4 border-transparent"}`}>
+    <article className={`min-h-44 bg-card p-5 backdrop-blur-xl ${alert ? "border-t-4 border-destructive" : "border-t-4 border-transparent"}`}>
       <div className="flex items-center justify-between">
         <Icon className={alert ? "size-5 text-destructive" : "size-5 text-primary"} aria-hidden="true" />
         {alert && <TriangleAlert className="size-4 text-destructive" aria-label="Out of range" />}
       </div>
       <p className="mt-6 text-sm font-medium text-muted-foreground">{label}</p>
-      <p className="mt-1 font-display text-3xl font-bold text-foreground">{value}</p>
+      <p className="mt-1 font-mono text-3xl font-bold text-foreground">{value}</p>
       <p className="mt-3 text-xs text-muted-foreground">{range}</p>
     </article>
   );
@@ -336,5 +339,32 @@ function HealthRow({ icon: Icon, label, value }: { icon: typeof Radio; label: st
       <dt className="flex items-center gap-3 text-sm text-muted-foreground"><Icon className="size-4 text-primary" />{label}</dt>
       <dd className="text-right text-sm font-semibold">{value}</dd>
     </div>
+  );
+}
+function SensorOrb({ status }: { status: SensorStatus }) {
+  const tone = status === "fresh" ? "var(--safe)" : status === "warning" ? "var(--warning)" : "var(--destructive)";
+  return (
+    <svg viewBox="0 0 200 200" aria-hidden="true" className="pointer-events-none mx-auto mb-4 block h-44 w-44">
+      <defs>
+        <radialGradient id="orb-core" cx="50%" cy="45%" r="55%">
+          <stop offset="0%" stopColor={tone} stopOpacity="0.9" />
+          <stop offset="100%" stopColor="var(--primary)" stopOpacity="0.05" />
+        </radialGradient>
+        <linearGradient id="orb-ring" x1="0" x2="1" y1="0" y2="1">
+          <stop offset="0%" stopColor="var(--primary)" />
+          <stop offset="50%" stopColor="var(--safe)" />
+          <stop offset="100%" stopColor="var(--accent)" />
+        </linearGradient>
+      </defs>
+      <circle cx="100" cy="100" r="44" fill="url(#orb-core)" className="sensor-pulse" />
+      <g className="orbit" style={{ transformOrigin: "100px 100px" }}>
+        <circle cx="100" cy="100" r="70" fill="none" stroke="url(#orb-ring)" strokeWidth="2" strokeDasharray="6 10" />
+        <circle cx="170" cy="100" r="5" fill="var(--primary)" />
+        <circle cx="45" cy="55" r="3.5" fill="var(--accent)" />
+      </g>
+      <circle cx="100" cy="100" r="90" fill="none" stroke="var(--border)" strokeWidth="1" />
+      <path d="M82 104 q18 -30 36 0" fill="none" stroke="var(--foreground)" strokeOpacity="0.8" strokeWidth="3" strokeLinecap="round" />
+      <rect x="80" y="104" width="40" height="18" rx="5" fill="none" stroke="var(--foreground)" strokeOpacity="0.8" strokeWidth="3" />
+    </svg>
   );
 }

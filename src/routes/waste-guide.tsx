@@ -59,7 +59,7 @@ function WasteGuide() {
 function WastePanel({ title, description, items, icon: Icon, accent, steps }: { title: string; description: string; items: string[]; icon: typeof Apple; accent: "safe" | "primary"; steps: string[] }) {
   return (
     <div className="grid gap-6 lg:grid-cols-2">
-      <section className="border border-border bg-card p-5 sm:p-7">
+      <section className="hud-glass rounded-2xl border border-border bg-card p-5 sm:p-7">
         <span className={`grid size-11 place-items-center rounded-md ${accent === "safe" ? "bg-safe-soft text-safe" : "bg-clinical text-primary"}`}><Icon className="size-6" /></span>
         <h2 className="mt-5 text-2xl font-bold">{title}</h2>
         <p className="mt-2 text-sm leading-6 text-muted-foreground">{description}</p>
@@ -67,7 +67,7 @@ function WastePanel({ title, description, items, icon: Icon, accent, steps }: { 
           {items.map((item) => <li key={item} className="flex items-center gap-3 border-t border-border pt-3 text-sm"><CheckCircle2 className={`size-4 shrink-0 ${accent === "safe" ? "text-safe" : "text-primary"}`} />{item}</li>)}
         </ul>
       </section>
-      <section className="border border-border bg-card p-5 sm:p-7">
+      <section className="hud-glass rounded-2xl border border-border bg-card p-5 sm:p-7">
         <div className="flex items-center gap-3"><Trash2 className="size-5 text-primary" /><h2 className="text-xl font-bold">Handle it well</h2></div>
         <ol className="mt-6 space-y-5">
           {steps.map((step, index) => <li key={step} className="flex gap-4"><span className="grid size-7 shrink-0 place-items-center rounded-full bg-secondary text-xs font-bold text-primary">{index + 1}</span><p className="pt-1 text-sm leading-6 text-muted-foreground">{step}</p></li>)}
