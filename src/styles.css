@@ -90,7 +90,8 @@
   --accent-foreground: oklch(0.98 0.01 280);
   --destructive: oklch(0.68 0.2 22);
   --destructive-foreground: oklch(0.98 0 0);
-  --border: oklch(0.8 0.1 205 / 0.16);
+  --border: oklch(0.8 0.1 205 / 0.14);
+  --grid-line: oklch(0.8 0.1 205 / 0.05);
   --input: oklch(0.8 0.1 205 / 0.22);
   --ring: oklch(0.8 0.14 200);
   --safe: oklch(0.82 0.18 155);
@@ -170,8 +171,8 @@
       radial-gradient(60rem 40rem at 85% -10%, var(--glow-accent), transparent 60%),
       radial-gradient(50rem 35rem at -10% 10%, var(--glow-primary), transparent 60%),
       radial-gradient(40rem 30rem at 50% 110%, var(--glow-safe), transparent 60%),
-      linear-gradient(var(--border) 1px, transparent 1px),
-      linear-gradient(90deg, var(--border) 1px, transparent 1px);
+      linear-gradient(var(--grid-line) 1px, transparent 1px),
+      linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
     background-size: auto, auto, auto, 48px 48px, 48px 48px;
     background-attachment: fixed;
   }
