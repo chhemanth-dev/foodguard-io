@@ -1,7 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
+import { gateway, generateText } from "ai";
 import { z } from "zod";
-
-const GATEWAY_URL = "https://connector-gateway.lovable.dev/perplexity";
 
 export const SOURCE_FILTERS = {
   web: [] as string[],
@@ -13,44 +12,52 @@ export type SourceFilter = keyof typeof SOURCE_FILTERS;
 
 export type WebResult = { title: string; url: string; snippet: string; date: string | null; source: string };
 
+type PerplexityOutput =
+  | { results: Array<{ title: string; url: string; snippet: string; date?: string; lastUpdated?: string }>; id: string }
+  | { error: string; statusCode?: number; message: string };
+
 export const searchWeb = createServerFn({ method: "POST" })
   .inputValidator((data) =>
     z.object({ query: z.string().trim().min(2).max(200), source: z.enum(["web", "social", "news"]) }).parse(data),
   )
   .handler(async ({ data }): Promise<WebResult[]> => {
-    const lovableKey = process.env["LOVABLE_API_KEY"];
-    const connKey = process.env["PERPLEXITY_API_KEY"];
-    if (!lovableKey || !connKey) throw new Error("Web search is not configured.");
-
     const domains = SOURCE_FILTERS[data.source];
-    const response = await fetch(`${GATEWAY_URL}/search`, {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${lovableKey}`,
-        "X-Connection-Api-Key": connKey,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        query: data.query,
-        max_results: 9,
-        ...(domains.length ? { search_domain_filter: domains } : {}),
-      }),
-    });
-    if (!response.ok) {
-      const body = await response.text();
-      console.error(`Web search failed [${response.status}]: ${body}`);
-      throw new Error(response.status === 402 ? "Search credits are used up right now." : `Search failed (${response.status}).`);
+
+    let output: PerplexityOutput | undefined;
+    try {
+      const result = await generateText({
+        model: "openai/gpt-5.4-nano",
+        prompt: `Search the web for: ${data.query}`,
+        tools: {
+          perplexity_search: gateway.tools.perplexitySearch({
+            maxResults: 9,
+            maxTokensPerPage: 256,
+            ...(domains.length ? { searchDomainFilter: [...domains] } : {}),
+          }),
+        },
+        toolChoice: { type: "tool", toolName: "perplexity_search" },
+      });
+      output = result.toolResults.find((r) => r.toolName === "perplexity_search")?.output as PerplexityOutput | undefined;
+    } catch (e) {
+      console.error("Web search failed:", e);
+      throw new Error("Search failed. Please try again.");
     }
-    const json = (await response.json()) as { results?: Array<{ title?: string; url?: string; snippet?: string; date?: string }> };
-    return (json.results ?? [])
+
+    if (!output) return [];
+    if ("error" in output) {
+      console.error(`Web search failed [${output.error}]: ${output.message}`);
+      throw new Error(output.error === "rate_limit" ? "Search is busy right now. Try again shortly." : "Search failed. Please try again.");
+    }
+
+    return output.results
       .filter((r) => r.url && r.title)
       .map((r) => {
         let source = "";
         try {
-          source = new URL(r.url!).hostname.replace(/^www\./, "");
+          source = new URL(r.url).hostname.replace(/^www\./, "");
         } catch {
           source = "";
         }
-        return { title: r.title!, url: r.url!, snippet: (r.snippet ?? "").slice(0, 280), date: r.date ?? null, source };
+        return { title: r.title, url: r.url, snippet: r.snippet.slice(0, 280), date: r.date ?? null, source };
       });
   });
