@@ -18,8 +18,8 @@ export const searchWeb = createServerFn({ method: "POST" })
     z.object({ query: z.string().trim().min(2).max(200), source: z.enum(["web", "social", "news"]) }).parse(data),
   )
   .handler(async ({ data }): Promise<WebResult[]> => {
-    const lovableKey = process.env.LOVABLE_API_KEY;
-    const connKey = process.env.PERPLEXITY_API_KEY;
+    const lovableKey = process.env["LOVABLE_API_KEY"];
+    const connKey = process.env["PERPLEXITY_API_KEY"];
     if (!lovableKey || !connKey) throw new Error("Web search is not configured.");
 
     const domains = SOURCE_FILTERS[data.source];
