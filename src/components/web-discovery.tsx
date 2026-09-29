@@ -1,9 +1,10 @@
 import { useServerFn } from "@tanstack/react-start";
-import { ExternalLink, Globe, Loader2, Newspaper, Search, Users } from "lucide-react";
+import { CheckCircle2, ExternalLink, Globe, Loader2, Newspaper, Search, Sparkles, Users } from "lucide-react";
 import { useEffect, useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { summarizeResults, type AiSummary } from "@/lib/ai-summary.functions";
 import { searchWeb, type SourceFilter, type WebResult } from "@/lib/web-search.functions";
 
 const sources: { id: SourceFilter; label: string; icon: typeof Globe }[] = [
@@ -14,21 +15,43 @@ const sources: { id: SourceFilter; label: string; icon: typeof Globe }[] = [
 
 export function WebDiscovery({ title, description, defaultQuery, suggestions }: { title: string; description: string; defaultQuery: string; suggestions: string[] }) {
   const runSearch = useServerFn(searchWeb);
+  const runSummary = useServerFn(summarizeResults);
   const [query, setQuery] = useState(defaultQuery);
   const [source, setSource] = useState<SourceFilter>("web");
   const [results, setResults] = useState<WebResult[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [summary, setSummary] = useState<AiSummary | null>(null);
+  const [summaryLoading, setSummaryLoading] = useState(false);
+  const [summaryError, setSummaryError] = useState<string | null>(null);
+
+  async function summarize(q: string, found: WebResult[]) {
+    setSummary(null);
+    setSummaryError(null);
+    if (!found.length) return;
+    setSummaryLoading(true);
+    try {
+      setSummary(await runSummary({ data: { query: q, results: found.map((r) => ({ title: r.title.slice(0, 400), snippet: r.snippet, source: r.source })) } }));
+    } catch (e) {
+      setSummaryError(e instanceof Error ? e.message : "AI summary failed.");
+    } finally {
+      setSummaryLoading(false);
+    }
+  }
 
   async function search(q: string, s: SourceFilter) {
     if (q.trim().length < 2) return;
     setLoading(true);
     setError(null);
     try {
-      setResults(await runSearch({ data: { query: q, source: s } }));
+      const found = await runSearch({ data: { query: q, source: s } });
+      setResults(found);
+      setLoading(false);
+      void summarize(q, found);
     } catch (e) {
       setError(e instanceof Error ? e.message : "Search failed.");
       setResults([]);
+      setSummary(null);
     } finally {
       setLoading(false);
     }
@@ -64,6 +87,24 @@ export function WebDiscovery({ title, description, defaultQuery, suggestions }: 
       </div>
 
       {error && <p className="mt-6 rounded-xl border border-destructive/30 bg-danger-soft p-4 text-sm text-destructive">{error}</p>}
+
+      {!error && (summaryLoading || summary || summaryError) && (
+        <div className="mt-6 rounded-xl border border-primary/30 bg-primary/5 p-5" aria-live="polite">
+          <p className="flex items-center gap-2 font-mono text-xs font-bold uppercase text-primary"><Sparkles className="size-4" /> AI summary</p>
+          {summaryLoading && <div className="mt-3 space-y-2"><div className="h-3 w-full animate-pulse rounded bg-muted" /><div className="h-3 w-4/5 animate-pulse rounded bg-muted" /><div className="h-3 w-3/5 animate-pulse rounded bg-muted" /></div>}
+          {summaryError && <p className="mt-3 text-sm text-destructive">{summaryError}</p>}
+          {summary && (
+            <>
+              <p className="mt-3 text-sm leading-6">{summary.overview}</p>
+              {summary.tips.length > 0 && (
+                <ul className="mt-3 grid gap-2 sm:grid-cols-2">
+                  {summary.tips.map((t) => <li key={t} className="flex gap-2 rounded-lg border border-border bg-card/60 p-3 text-xs leading-5"><CheckCircle2 className="mt-0.5 size-4 shrink-0 text-primary" />{t}</li>)}
+                </ul>
+              )}
+            </>
+          )}
+        </div>
+      )}
       {!error && !loading && results.length === 0 && <p className="mt-6 text-sm text-muted-foreground">No results yet. Try another search.</p>}
 
       <div className="mt-6 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
