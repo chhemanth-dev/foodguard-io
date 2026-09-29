@@ -17,8 +17,8 @@ export const searchWeb = createServerFn({ method: "POST" })
   )
   .handler(async ({ data }): Promise<WebResult[]> => {
     const domains = SOURCE_FILTERS[data.source];
-    const LOVABLE_API_KEY = process.env.LOVABLE_API_KEY;
-    const PERPLEXITY_API_KEY = process.env.PERPLEXITY_API_KEY;
+    const LOVABLE_API_KEY = process.env['LOVABLE_API_KEY'];
+    const PERPLEXITY_API_KEY = process.env['PERPLEXITY_API_KEY'];
     if (!LOVABLE_API_KEY || !PERPLEXITY_API_KEY) throw new Error("Search is not configured.");
 
     const response = await fetch("https://connector-gateway.lovable.dev/perplexity/search", {
