@@ -51,6 +51,6 @@ export const searchWeb = createServerFn({ method: "POST" })
         } catch {
           source = "";
         }
-        return { title: r.title, url: r.url, snippet: r.snippet.slice(0, 280), date: r.date ?? null, source };
+        return { title: r.title, url: r.url, snippet: (r.snippet ?? "").slice(0, 280), date: r.date ?? null, source };
       });
   });
