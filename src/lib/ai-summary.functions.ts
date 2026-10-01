@@ -19,10 +19,10 @@ export const summarizeResults = createServerFn({ method: "POST" })
     const sources = data.results.map((r, i) => `[${i + 1}] ${r.title} (${r.source}): ${r.snippet}`).join("\n");
     const prompt = `Topic: ${data.query}\n\nSearch results:\n${sources}\n\nUsing only these results, write for a home user managing food and waste:\nLine 1: a 2-3 sentence plain-language overview.\nThen exactly 4 lines, each starting with "- ", giving practical, actionable takeaways (max 25 words each).\nNo headings, no markdown other than the dashes.`;
 
-    const res = await fetch("https://ai.gateway.lovable.dev/v1/responses", {
+    const res = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",
       headers: { "Lovable-API-Key": key, Authorization: `Bearer ${key}`, "Content-Type": "application/json", "X-Lovable-AIG-SDK": "fetch" },
-      body: JSON.stringify({ model: "openai/gpt-6-astra", input: prompt, stream: true, store: false, reasoning: { effort: "low" } }),
+      body: JSON.stringify({ model: "google/gemini-3-flash-preview", messages: [{ role: "user", content: prompt }], stream: true }),
     });
     if (!res.ok || !res.body) {
       console.error(`AI summary failed [${res.status}]: ${await res.text()}`);
@@ -44,8 +44,9 @@ export const summarizeResults = createServerFn({ method: "POST" })
         const payload = line.slice(5).trim();
         if (!payload || payload === "[DONE]") continue;
         try {
-          const evt = JSON.parse(payload) as { type?: string; delta?: string };
-          if (evt.type === "response.output_text.delta" && evt.delta) text += evt.delta;
+          const evt = JSON.parse(payload) as { choices?: Array<{ delta?: { content?: string } }> };
+          const delta = evt.choices?.[0]?.delta?.content;
+          if (delta) text += delta;
         } catch {
           /* ignore partial */
         }
