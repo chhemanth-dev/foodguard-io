@@ -1,6 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
 
-import { runSummary, summaryInput, type AiSummary } from "./search-core.server";
+import { runSummary, summaryInput, type AiSummary } from "./search-core";
 
 export type { AiSummary };
 

@@ -7,7 +7,7 @@ export const Route = createFileRoute("/api/public/search")({
     handlers: {
       OPTIONS: async () => new Response(null, { status: 204, headers: cors }),
       POST: async ({ request }) => {
-        const { runSearch, searchInput } = await import("@/lib/search-core.server");
+        const { runSearch, searchInput } = await import("@/lib/search-core");
         const parsed = searchInput.safeParse(await request.json().catch(() => null));
         if (!parsed.success) return Response.json({ error: "Invalid search." }, { status: 400, headers: cors });
         try {

@@ -1,6 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
 
-import { runSearch, searchInput, type SourceFilter, type WebResult } from "./search-core.server";
+import { runSearch, searchInput, type SourceFilter, type WebResult } from "./search-core";
 
 export type { SourceFilter, WebResult };
 
