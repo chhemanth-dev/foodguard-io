@@ -15,6 +15,7 @@ import { Route as InnovationsRouteImport } from './routes/innovations'
 import { Route as WasteGuideRouteImport } from './routes/waste-guide'
 import { Route as ApiPublicSearchRouteImport } from './routes/api/public/search'
 import { Route as ApiPublicSummaryRouteImport } from './routes/api/public/summary'
+import { Route as ApiPublicDetectorLatestRouteImport } from './routes/api/public/detector/latest'
 import { Route as ApiPublicDetectorReadingsRouteImport } from './routes/api/public/detector/readings'
 
 const IndexRoute = IndexRouteImport.update({
@@ -47,6 +48,11 @@ const ApiPublicSummaryRoute = ApiPublicSummaryRouteImport.update({
   path: '/api/public/summary',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicDetectorLatestRoute = ApiPublicDetectorLatestRouteImport.update({
+  id: '/api/public/detector/latest',
+  path: '/api/public/detector/latest',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiPublicDetectorReadingsRoute =
   ApiPublicDetectorReadingsRouteImport.update({
     id: '/api/public/detector/readings',
@@ -61,6 +67,7 @@ export interface FileRoutesByFullPath {
   '/waste-guide': typeof WasteGuideRoute
   '/api/public/search': typeof ApiPublicSearchRoute
   '/api/public/summary': typeof ApiPublicSummaryRoute
+  '/api/public/detector/latest': typeof ApiPublicDetectorLatestRoute
   '/api/public/detector/readings': typeof ApiPublicDetectorReadingsRoute
 }
 export interface FileRoutesByTo {
@@ -70,6 +77,7 @@ export interface FileRoutesByTo {
   '/waste-guide': typeof WasteGuideRoute
   '/api/public/search': typeof ApiPublicSearchRoute
   '/api/public/summary': typeof ApiPublicSummaryRoute
+  '/api/public/detector/latest': typeof ApiPublicDetectorLatestRoute
   '/api/public/detector/readings': typeof ApiPublicDetectorReadingsRoute
 }
 export interface FileRoutesById {
@@ -80,6 +88,7 @@ export interface FileRoutesById {
   '/waste-guide': typeof WasteGuideRoute
   '/api/public/search': typeof ApiPublicSearchRoute
   '/api/public/summary': typeof ApiPublicSummaryRoute
+  '/api/public/detector/latest': typeof ApiPublicDetectorLatestRoute
   '/api/public/detector/readings': typeof ApiPublicDetectorReadingsRoute
 }
 export interface FileRouteTypes {
@@ -91,6 +100,7 @@ export interface FileRouteTypes {
     | '/waste-guide'
     | '/api/public/search'
     | '/api/public/summary'
+    | '/api/public/detector/latest'
     | '/api/public/detector/readings'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -100,6 +110,7 @@ export interface FileRouteTypes {
     | '/waste-guide'
     | '/api/public/search'
     | '/api/public/summary'
+    | '/api/public/detector/latest'
     | '/api/public/detector/readings'
   id:
     | '__root__'
@@ -109,6 +120,7 @@ export interface FileRouteTypes {
     | '/waste-guide'
     | '/api/public/search'
     | '/api/public/summary'
+    | '/api/public/detector/latest'
     | '/api/public/detector/readings'
   fileRoutesById: FileRoutesById
 }
@@ -119,6 +131,7 @@ export interface RootRouteChildren {
   WasteGuideRoute: typeof WasteGuideRoute
   ApiPublicSearchRoute: typeof ApiPublicSearchRoute
   ApiPublicSummaryRoute: typeof ApiPublicSummaryRoute
+  ApiPublicDetectorLatestRoute: typeof ApiPublicDetectorLatestRoute
   ApiPublicDetectorReadingsRoute: typeof ApiPublicDetectorReadingsRoute
 }
 
@@ -166,6 +179,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicSummaryRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/detector/latest': {
+      id: '/api/public/detector/latest'
+      path: '/api/public/detector/latest'
+      fullPath: '/api/public/detector/latest'
+      preLoaderRoute: typeof ApiPublicDetectorLatestRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/detector/readings': {
       id: '/api/public/detector/readings'
       path: '/api/public/detector/readings'
@@ -183,6 +203,7 @@ const rootRouteChildren: RootRouteChildren = {
   WasteGuideRoute: WasteGuideRoute,
   ApiPublicSearchRoute: ApiPublicSearchRoute,
   ApiPublicSummaryRoute: ApiPublicSummaryRoute,
+  ApiPublicDetectorLatestRoute: ApiPublicDetectorLatestRoute,
   ApiPublicDetectorReadingsRoute: ApiPublicDetectorReadingsRoute,
 }
 export const routeTree = rootRouteImport
