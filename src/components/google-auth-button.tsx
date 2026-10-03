@@ -19,8 +19,17 @@ export function GoogleAuthButton() {
 
   async function signIn() {
     setBusy(true);
-    const result = await lovable.auth.signInWithOAuth("google", { redirect_uri: window.location.origin });
-    if (result.error) toast.error("Google sign-in failed. Please try again.");
+    // Lovable's managed sign-in only runs on Lovable hosting; other hosts (e.g. Vercel)
+    // use the standard Google redirect flow, which needs own Google keys + allowed redirect URL.
+    const host = window.location.hostname;
+    const onLovable = /(^|\.)(lovable\.app|lovableproject\.com|lovable\.dev)$/.test(host) || host === "localhost";
+    if (onLovable) {
+      const result = await lovable.auth.signInWithOAuth("google", { redirect_uri: window.location.origin });
+      if (result.error) toast.error("Google sign-in failed. Please try again.");
+    } else {
+      const { error } = await supabase.auth.signInWithOAuth({ provider: "google", options: { redirectTo: window.location.origin } });
+      if (error) toast.error("Google sign-in failed. Please try again.");
+    }
     setBusy(false);
   }
 
