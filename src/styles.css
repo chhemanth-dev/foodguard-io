@@ -12,7 +12,7 @@
  *
  * Colors are driven by three hue variables (--hue-primary, --hue-accent,
  * --hue-base). Each [data-palette] block below swaps those hues, and the
- * palette rotates automatically every 2 hours (see src/lib/palettes.ts).
+ * palette swaps blue/pink every 50 seconds (see src/lib/palettes.ts).
  * Status colors (safe / warning / destructive) stay constant so food
  * safety signals always mean the same thing.
  */
