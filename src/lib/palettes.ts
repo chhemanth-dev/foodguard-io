@@ -1,12 +1,8 @@
-export const PALETTE_INTERVAL_MS = 2 * 60 * 60 * 1000;
+export const PALETTE_INTERVAL_MS = 50 * 1000;
 
 export const PALETTES = [
-  { id: "basil", name: "Fresh Basil", note: "Crisp greens and tangerine" },
-  { id: "citrus", name: "Citrus Grove", note: "Orange zest and lime" },
-  { id: "berry", name: "Berry Market", note: "Raspberry and mango" },
-  { id: "ocean", name: "Ocean Harvest", note: "Deep sea blue and coral" },
-  { id: "beet", name: "Beetroot Garden", note: "Beet plum and mint" },
-  { id: "blueberry", name: "Blueberry Frost", note: "Blueberry and peach" },
+  { id: "blue", name: "Ocean Blue", note: "Deep blue with pink accents" },
+  { id: "pink", name: "Blossom Pink", note: "Soft pink with blue accents" },
 ] as const;
 
 export type Palette = (typeof PALETTES)[number];
