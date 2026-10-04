@@ -13,6 +13,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as DeviceSetupRouteImport } from './routes/device-setup'
 import { Route as InnovationsRouteImport } from './routes/innovations'
 import { Route as WasteGuideRouteImport } from './routes/waste-guide'
+import { Route as AuthHandoffRouteImport } from './routes/auth.handoff'
 import { Route as ApiPublicSearchRouteImport } from './routes/api/public/search'
 import { Route as ApiPublicSummaryRouteImport } from './routes/api/public/summary'
 import { Route as ApiPublicDetectorLatestRouteImport } from './routes/api/public/detector/latest'
@@ -36,6 +37,11 @@ const InnovationsRoute = InnovationsRouteImport.update({
 const WasteGuideRoute = WasteGuideRouteImport.update({
   id: '/waste-guide',
   path: '/waste-guide',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthHandoffRoute = AuthHandoffRouteImport.update({
+  id: '/auth/handoff',
+  path: '/auth/handoff',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApiPublicSearchRoute = ApiPublicSearchRouteImport.update({
@@ -65,6 +71,7 @@ export interface FileRoutesByFullPath {
   '/device-setup': typeof DeviceSetupRoute
   '/innovations': typeof InnovationsRoute
   '/waste-guide': typeof WasteGuideRoute
+  '/auth/handoff': typeof AuthHandoffRoute
   '/api/public/search': typeof ApiPublicSearchRoute
   '/api/public/summary': typeof ApiPublicSummaryRoute
   '/api/public/detector/latest': typeof ApiPublicDetectorLatestRoute
@@ -75,6 +82,7 @@ export interface FileRoutesByTo {
   '/device-setup': typeof DeviceSetupRoute
   '/innovations': typeof InnovationsRoute
   '/waste-guide': typeof WasteGuideRoute
+  '/auth/handoff': typeof AuthHandoffRoute
   '/api/public/search': typeof ApiPublicSearchRoute
   '/api/public/summary': typeof ApiPublicSummaryRoute
   '/api/public/detector/latest': typeof ApiPublicDetectorLatestRoute
@@ -86,6 +94,7 @@ export interface FileRoutesById {
   '/device-setup': typeof DeviceSetupRoute
   '/innovations': typeof InnovationsRoute
   '/waste-guide': typeof WasteGuideRoute
+  '/auth/handoff': typeof AuthHandoffRoute
   '/api/public/search': typeof ApiPublicSearchRoute
   '/api/public/summary': typeof ApiPublicSummaryRoute
   '/api/public/detector/latest': typeof ApiPublicDetectorLatestRoute
@@ -98,6 +107,7 @@ export interface FileRouteTypes {
     | '/device-setup'
     | '/innovations'
     | '/waste-guide'
+    | '/auth/handoff'
     | '/api/public/search'
     | '/api/public/summary'
     | '/api/public/detector/latest'
@@ -108,6 +118,7 @@ export interface FileRouteTypes {
     | '/device-setup'
     | '/innovations'
     | '/waste-guide'
+    | '/auth/handoff'
     | '/api/public/search'
     | '/api/public/summary'
     | '/api/public/detector/latest'
@@ -118,6 +129,7 @@ export interface FileRouteTypes {
     | '/device-setup'
     | '/innovations'
     | '/waste-guide'
+    | '/auth/handoff'
     | '/api/public/search'
     | '/api/public/summary'
     | '/api/public/detector/latest'
@@ -129,6 +141,7 @@ export interface RootRouteChildren {
   DeviceSetupRoute: typeof DeviceSetupRoute
   InnovationsRoute: typeof InnovationsRoute
   WasteGuideRoute: typeof WasteGuideRoute
+  AuthHandoffRoute: typeof AuthHandoffRoute
   ApiPublicSearchRoute: typeof ApiPublicSearchRoute
   ApiPublicSummaryRoute: typeof ApiPublicSummaryRoute
   ApiPublicDetectorLatestRoute: typeof ApiPublicDetectorLatestRoute
@@ -163,6 +176,13 @@ declare module '@tanstack/react-router' {
       path: '/waste-guide'
       fullPath: '/waste-guide'
       preLoaderRoute: typeof WasteGuideRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/auth/handoff': {
+      id: '/auth/handoff'
+      path: '/auth/handoff'
+      fullPath: '/auth/handoff'
+      preLoaderRoute: typeof AuthHandoffRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/public/search': {
@@ -201,6 +221,7 @@ const rootRouteChildren: RootRouteChildren = {
   DeviceSetupRoute: DeviceSetupRoute,
   InnovationsRoute: InnovationsRoute,
   WasteGuideRoute: WasteGuideRoute,
+  AuthHandoffRoute: AuthHandoffRoute,
   ApiPublicSearchRoute: ApiPublicSearchRoute,
   ApiPublicSummaryRoute: ApiPublicSummaryRoute,
   ApiPublicDetectorLatestRoute: ApiPublicDetectorLatestRoute,
