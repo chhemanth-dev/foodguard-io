@@ -73,9 +73,9 @@
 }
 
 :root {
-  --hue-primary: 160;
-  --hue-accent: 50;
-  --hue-base: 110;
+  --hue-primary: 240;
+  --hue-accent: 330;
+  --hue-base: 225;
 
   --radius: 0.9rem;
   --background: oklch(0.975 0.014 var(--hue-base));
