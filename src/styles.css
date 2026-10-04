@@ -12,7 +12,7 @@
  *
  * Colors are driven by three hue variables (--hue-primary, --hue-accent,
  * --hue-base). Each [data-palette] block below swaps those hues, and the
- * palette rotates automatically every 2 hours (see src/lib/palettes.ts).
+ * palette swaps blue/pink every 50 seconds (see src/lib/palettes.ts).
  * Status colors (safe / warning / destructive) stay constant so food
  * safety signals always mean the same thing.
  */
@@ -73,9 +73,9 @@
 }
 
 :root {
-  --hue-primary: 160;
-  --hue-accent: 50;
-  --hue-base: 110;
+  --hue-primary: 240;
+  --hue-accent: 330;
+  --hue-base: 225;
 
   --radius: 0.9rem;
   --background: oklch(0.975 0.014 var(--hue-base));
@@ -125,12 +125,21 @@
   --sidebar-ring: var(--ring);
 }
 
-[data-palette="basil"] { --hue-primary: 160; --hue-accent: 50; --hue-base: 110; }
-[data-palette="citrus"] { --hue-primary: 45; --hue-accent: 130; --hue-base: 85; }
-[data-palette="berry"] { --hue-primary: 5; --hue-accent: 75; --hue-base: 20; }
-[data-palette="ocean"] { --hue-primary: 240; --hue-accent: 30; --hue-base: 220; }
-[data-palette="beet"] { --hue-primary: 330; --hue-accent: 170; --hue-base: 340; }
-[data-palette="blueberry"] { --hue-primary: 280; --hue-accent: 55; --hue-base: 290; }
+/* Hues are registered so the blue <-> pink swap fades smoothly instead of snapping. */
+@property --hue-primary { syntax: "<number>"; inherits: true; initial-value: 240; }
+@property --hue-accent { syntax: "<number>"; inherits: true; initial-value: 330; }
+@property --hue-base { syntax: "<number>"; inherits: true; initial-value: 225; }
+
+:root {
+  transition: --hue-primary 3s ease, --hue-accent 3s ease, --hue-base 3s ease;
+}
+
+[data-palette="blue"] { --hue-primary: 240; --hue-accent: 330; --hue-base: 225; }
+[data-palette="pink"] { --hue-primary: 350; --hue-accent: 240; --hue-base: 345; }
+
+@media (prefers-reduced-motion: reduce) {
+  :root { transition: none; }
+}
 
 @layer base {
   * {

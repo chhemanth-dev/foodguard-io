@@ -2,7 +2,7 @@ import { Link } from "@tanstack/react-router";
 import { BellRing, Cable, FlaskConical, Lightbulb, Menu, Recycle, X } from "lucide-react";
 import { useState } from "react";
 
-import { GoogleAuthButton } from "@/components/google-auth-button";
+import { EmailAuthButton } from "@/components/email-auth-button";
 import { PaletteCycler } from "@/components/palette-cycler";
 import { Button } from "@/components/ui/button";
 
@@ -48,7 +48,7 @@ export function SiteHeader() {
 
         <div className="flex items-center gap-2">
           <PaletteCycler />
-          <GoogleAuthButton />
+          <EmailAuthButton />
         </div>
 
         <Button
