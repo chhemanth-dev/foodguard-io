@@ -188,8 +188,8 @@ function Dashboard() {
                 {isLive ? (isStale ? "Detector signal is delayed" : "Detector connected") : "Waiting for the physical detector"}
               </span>
             </div>
-            <h1 className="max-w-3xl text-4xl font-bold leading-[1.05] text-foreground sm:text-6xl">
-              Know when food conditions <span className="text-gradient">begin to change.</span>
+            <h1 className="display-xl max-w-3xl text-foreground">
+              Know when food <span className="text-gradient">starts to turn.</span>
             </h1>
             <p className="mt-5 max-w-xl text-base leading-7 text-muted-foreground sm:text-lg">
               A clear view of temperature, humidity, pressure and gas readings from your Food Storage Spoilage Box.
@@ -239,6 +239,21 @@ function Dashboard() {
           </div>
         </div>
       </section>
+
+      <div className="relative overflow-hidden border-y border-border bg-foreground py-4 text-background" aria-hidden="true">
+        <div className="marquee flex w-max gap-12 whitespace-nowrap font-display text-2xl font-bold uppercase tracking-tight sm:text-4xl">
+          {[0, 1].map((copy) => (
+            <div key={copy} className="flex gap-12">
+              <span>Temp {reading.temperature.toFixed(1)}°C</span><span className="text-accent">✦</span>
+              <span>Humidity {reading.humidity}%</span><span className="text-accent">✦</span>
+              <span>Pressure {reading.pressure} hPa</span><span className="text-accent">✦</span>
+              <span>VOC {reading.voc} ppb</span><span className="text-accent">✦</span>
+              <span>{status.label}</span><span className="text-accent">✦</span>
+              <span>Fresher food · Less waste</span><span className="text-accent">✦</span>
+            </div>
+          ))}
+        </div>
+      </div>
 
       <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
         <section aria-labelledby="readings-title" className="scroll-mt-24">
