@@ -176,8 +176,8 @@ function Dashboard() {
 
   return (
     <main>
-      <section className="stage relative overflow-hidden">
-        <div className="stage-spotlight" aria-hidden="true" />
+      <section className="relative overflow-hidden">
+
         <div className="relative mx-auto grid max-w-7xl items-center gap-10 px-4 py-14 sm:px-6 lg:grid-cols-[1.05fr_0.95fr] lg:px-8 lg:py-24">
           <div className="rise-in">
             <div className="mb-5 flex flex-wrap items-center gap-3">
