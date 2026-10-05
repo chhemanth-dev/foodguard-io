@@ -14,3 +14,5 @@
 - [x] Replace Google sign-in with email verification-code sign-in
 - [x] Blue/pink colour swap every 50 seconds
 - [x] Premium redesign inspired by landonorris.com
+- [x] Revert home page hero to the light premium look (dark background removed)
+
