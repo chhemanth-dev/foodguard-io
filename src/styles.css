@@ -272,3 +272,39 @@
   .lift:hover { transform: none; }
   body { transition: none; }
 }
+
+/* Premium dark "stage": re-scopes the tokens so everything inside turns cinematic. */
+.stage {
+  --background: oklch(0.15 0.03 var(--hue-primary));
+  --foreground: oklch(0.97 0.01 var(--hue-primary));
+  --muted-foreground: oklch(0.75 0.03 var(--hue-primary));
+  --card: oklch(1 0 0 / 0.06);
+  --border: oklch(1 0 0 / 0.12);
+  --muted: oklch(1 0 0 / 0.08);
+  --clinical: oklch(0.7 0.15 var(--hue-primary) / 0.2);
+  --primary: oklch(0.72 0.16 var(--hue-primary));
+  --chart-3: oklch(0.78 0.15 calc(var(--hue-primary) + 70));
+  --chart-2: oklch(0.78 0.16 var(--hue-accent));
+  background-color: var(--background);
+  color: var(--foreground);
+  border-bottom-left-radius: 2.5rem;
+  border-bottom-right-radius: 2.5rem;
+}
+
+.stage-spotlight {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(40rem 26rem at 78% 30%, oklch(0.7 0.18 var(--hue-accent) / 0.35), transparent 65%),
+    radial-gradient(36rem 24rem at 10% 90%, oklch(0.65 0.17 var(--hue-primary) / 0.4), transparent 65%),
+    linear-gradient(oklch(1 0 0 / 0.04) 1px, transparent 1px) 0 0 / 100% 64px;
+}
+
+.stage .stage-spotlight::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  opacity: 0.08;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
