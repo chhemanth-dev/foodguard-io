@@ -13,4 +13,4 @@
 - [x] Verify and publish website
 - [x] Replace Google sign-in with email verification-code sign-in
 - [x] Blue/pink colour swap every 50 seconds
-- [ ] Premium redesign inspired by landonorris.com
+- [x] Premium redesign inspired by landonorris.com
