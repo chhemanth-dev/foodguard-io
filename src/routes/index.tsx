@@ -222,7 +222,7 @@ function Dashboard() {
                 className="aspect-[4/3] w-full rounded-[1.6rem] object-cover"
               />
             </div>
-            <div className={`hud-glass float-y relative -mt-16 ml-auto mr-2 max-w-xs rounded-2xl border p-4 backdrop-blur-xl sm:mr-6 ${status.className}`}>
+            <div className="float-y relative -mt-16 ml-auto mr-2 max-w-xs rounded-2xl bg-popover shadow-2xl sm:mr-6"><div className={`rounded-2xl border p-4 ${status.className}`}>
               <div className="flex items-start justify-between gap-4">
                 <div>
                   <p className="font-mono text-[11px] font-bold uppercase">Current food status</p>
@@ -236,7 +236,7 @@ function Dashboard() {
                   <Check /> Dismiss sample alert
                 </Button>
               )}
-            </div>
+            </div></div>
           </div>
         </div>
       </section>
