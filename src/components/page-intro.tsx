@@ -25,7 +25,7 @@ export function PageIntro({
             </span>
             {eyebrow}
           </div>
-          <h1 className="max-w-3xl text-4xl font-bold leading-[1.08] text-foreground sm:text-5xl">
+          <h1 className="display-xl max-w-3xl text-foreground [font-size:clamp(2.5rem,6vw,5.25rem)]">
             <span className="text-gradient">{title}</span>
           </h1>
           <p className="mt-5 max-w-2xl text-base leading-7 text-muted-foreground sm:text-lg">{description}</p>

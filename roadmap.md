@@ -11,3 +11,6 @@
 - [x] Replace sample-only dashboard with live-first mode and fallback
 - [x] Add detector setup instructions and firmware example
 - [x] Verify and publish website
+- [x] Replace Google sign-in with email verification-code sign-in
+- [x] Blue/pink colour swap every 50 seconds
+- [x] Premium redesign inspired by landonorris.com

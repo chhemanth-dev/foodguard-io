@@ -244,8 +244,31 @@
   animation: orbit 18s linear infinite;
 }
 
+/* Premium editorial display type: oversized, tight, uppercase. */
+@utility display-xl {
+  font-family: var(--font-display);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: -0.045em;
+  line-height: 0.9;
+  font-size: clamp(2.9rem, 8vw, 7rem);
+}
+
+@keyframes marquee {
+  to { transform: translateX(calc(-50% - 1.5rem)); }
+}
+
+@utility marquee {
+  animation: marquee 32s linear infinite;
+}
+
+@layer base {
+  h2 { letter-spacing: -0.03em; }
+  ::selection { background: var(--primary); color: var(--primary-foreground); }
+}
+
 @media (prefers-reduced-motion: reduce) {
-  .rise-in, .orbit, .float-y, .blob, .sensor-pulse { animation: none; }
+  .rise-in, .orbit, .float-y, .blob, .sensor-pulse, .marquee { animation: none; }
   .lift:hover { transform: none; }
   body { transition: none; }
 }
