@@ -127,7 +127,7 @@ async function paidSearch(data: z.infer<typeof searchInput>, allowForward: boole
 export function quickSummary(data: z.infer<typeof summaryInput>): AiSummary {
   const sentences = data.results.flatMap((r) => r.snippet.split(/(?<=[.!?])\s+/)).map((x) => x.trim()).filter((x) => x.length > 40 && x.length < 220);
   const joined = sentences.slice(0, 2).join(" ");
-  const overview = (joined && joined[0].toUpperCase() + joined.slice(1)) || `Here are the most relevant sources found for "${data.query}".`;
+  const overview = (joined && joined.charAt(0).toUpperCase() + joined.slice(1)) || `Here are the most relevant sources found for "${data.query}".`;
   const tips = data.results.slice(0, 4).map((r) => `Read "${r.title.slice(0, 80)}" on ${r.source}.`);
   return { overview, tips };
 }
