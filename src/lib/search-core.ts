@@ -80,13 +80,15 @@ export async function freeSearch(data: z.infer<typeof searchInput>): Promise<Web
 }
 
 export async function runSearch(data: z.infer<typeof searchInput>, allowForward = true): Promise<WebResult[]> {
+  // Free sources first so search keeps working without credits; paid search only as a backup.
+  const free = await freeSearch(data).catch(() => [] as WebResult[]);
+  if (free.length >= 3) return free;
   try {
     const paid = await paidSearch(data, allowForward);
     if (paid.length) return paid;
   } catch (e) {
-    console.error("Paid search unavailable, using free search:", e instanceof Error ? e.message : e);
+    console.error("Paid search unavailable:", e instanceof Error ? e.message : e);
   }
-  const free = await freeSearch(data);
   if (!free.length) throw new Error("No closely related results found. Try different words.");
   return free;
 }
@@ -121,7 +123,26 @@ async function paidSearch(data: z.infer<typeof searchInput>, allowForward: boole
     });
 }
 
+// Credit-free summary built from the results themselves.
+export function quickSummary(data: z.infer<typeof summaryInput>): AiSummary {
+  const sentences = data.results.flatMap((r) => r.snippet.split(/(?<=[.!?])\s+/)).map((x) => x.trim()).filter((x) => x.length > 40 && x.length < 220);
+  const joined = sentences.slice(0, 2).join(" ");
+  const overview = (joined && joined.charAt(0).toUpperCase() + joined.slice(1)) || `Here are the most relevant sources found for "${data.query}".`;
+  const tips = data.results.slice(0, 4).map((r) => `Read "${r.title.slice(0, 80)}" on ${r.source}.`);
+  return { overview, tips };
+}
+
 export async function runSummary(data: z.infer<typeof summaryInput>, allowForward = true): Promise<AiSummary> {
+  try {
+    const ai = await aiSummary(data, allowForward);
+    if (ai.overview) return ai;
+  } catch (e) {
+    console.error("AI summary unavailable, using quick summary:", e instanceof Error ? e.message : e);
+  }
+  return quickSummary(data);
+}
+
+async function aiSummary(data: z.infer<typeof summaryInput>, allowForward: boolean): Promise<AiSummary> {
   const { lovable } = keys();
   if (!lovable) {
     if (allowForward) return forward<AiSummary>("summary", data);
