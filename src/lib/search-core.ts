@@ -34,7 +34,64 @@ async function forward<T>(path: string, body: unknown): Promise<T> {
   return json;
 }
 
+function hostOf(url: string) {
+  try {
+    return new URL(url).hostname.replace(/^www\./, "");
+  } catch {
+    return "";
+  }
+}
+
+const strip = (s: string) => s.replace(/<[^>]+>/g, "").replace(/&quot;/g, '"').replace(/&amp;/g, "&").replace(/&#39;/g, "'").trim();
+
+// Free, key-less fallback used when paid search is unavailable (e.g. credits ran out).
+export async function freeSearch(data: z.infer<typeof searchInput>): Promise<WebResult[]> {
+  const q = encodeURIComponent(data.query);
+  const headers = { "User-Agent": "FoodStorageSpoilageBox/1.0 (https://foodguard-io.lovable.app)" };
+  const terms = data.query.toLowerCase().split(/\W+/).filter((t) => t.length > 2);
+
+  const wiki = async (): Promise<WebResult[]> => {
+    const r = await fetch(`https://en.wikipedia.org/w/api.php?action=query&list=search&srsearch=${q}&srlimit=6&format=json&origin=*`, { headers });
+    const j = (await r.json()) as { query?: { search?: Array<{ title: string; snippet: string; timestamp?: string }> } };
+    return (j.query?.search ?? []).map((s) => ({ title: s.title, url: `https://en.wikipedia.org/wiki/${encodeURIComponent(s.title.replace(/ /g, "_"))}`, snippet: strip(s.snippet).slice(0, 280), date: s.timestamp?.slice(0, 10) ?? null, source: "en.wikipedia.org" }));
+  };
+  const hn = async (): Promise<WebResult[]> => {
+    const r = await fetch(`https://hn.algolia.com/api/v1/search?query=${q}&tags=story&hitsPerPage=10`, { headers });
+    const j = (await r.json()) as { hits?: Array<{ title?: string; url?: string; story_text?: string; created_at?: string }> };
+    return (j.hits ?? []).filter((h) => h.title && h.url).map((h) => ({ title: h.title!, url: h.url!, snippet: strip(h.story_text ?? "").slice(0, 280), date: h.created_at?.slice(0, 10) ?? null, source: hostOf(h.url!) }));
+  };
+  const reddit = async (): Promise<WebResult[]> => {
+    const r = await fetch(`https://www.reddit.com/search.json?q=${q}&limit=10&sort=relevance`, { headers });
+    const j = (await r.json()) as { data?: { children?: Array<{ data: { title: string; permalink: string; selftext?: string; created_utc?: number } }> } };
+    return (j.data?.children ?? []).map(({ data: p }) => ({ title: p.title, url: `https://www.reddit.com${p.permalink}`, snippet: (p.selftext ?? "").slice(0, 280), date: p.created_utc ? new Date(p.created_utc * 1000).toISOString().slice(0, 10) : null, source: "reddit.com" }));
+  };
+
+  const plan = data.source === "social" ? [reddit, hn] : data.source === "news" ? [hn, wiki] : [wiki, hn, reddit];
+  const settled = await Promise.allSettled(plan.map((f) => f()));
+  const all = settled.flatMap((s) => (s.status === "fulfilled" ? s.value : []));
+  const score = (r: WebResult) => { const t = `${r.title} ${r.snippet}`.toLowerCase(); return terms.filter((w) => t.includes(w)).length; };
+  const seen = new Set<string>();
+  return all
+    .map((r) => ({ r, s: score(r) }))
+    .filter(({ r, s }) => s >= Math.max(1, Math.ceil(terms.length / 2)) && !seen.has(r.url) && seen.add(r.url))
+    .sort((a, b) => b.s - a.s)
+    .slice(0, 9)
+    .map(({ r }) => r);
+}
+
 export async function runSearch(data: z.infer<typeof searchInput>, allowForward = true): Promise<WebResult[]> {
+  try {
+    const paid = await paidSearch(data, allowForward);
+    if (paid.length) return paid;
+  } catch (e) {
+    console.error("Paid search unavailable, using free search:", e instanceof Error ? e.message : e);
+  }
+  const free = await freeSearch(data);
+  if (!free.length) throw new Error("No closely related results found. Try different words.");
+  return free;
+}
+
+async function paidSearch(data: z.infer<typeof searchInput>, allowForward: boolean): Promise<WebResult[]> {
   const { lovable, perplexity } = keys();
   if (!lovable || !perplexity) {
     if (allowForward) return (await forward<{ results: WebResult[] }>("search", data)).results;
